@@ -1,33 +1,7 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-.venv
-dist/
-build/
-*.egg-info/
-*.egg
-
-# Environment variables
+*.pyc
 .env
-.env.local
-.env.*.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
+.venv
+venv/
 .DS_Store
-Thumbs.db
-
-# Railway
 *.log
