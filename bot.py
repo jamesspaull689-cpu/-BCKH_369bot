@@ -13,10 +13,10 @@ logger = logging.getLogger(__name__)
 # Get token from environment
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
-# Sports list
+# Sports dictionary
 SPORTS = {
     "football": "⚽ Football",
-    "basketball": "🏀 Basketball",
+    "basketball": "🏀 Basketball", 
     "tennis": "🎾 Tennis",
     "cricket": "🏏 Cricket",
     "golf": "⛳ Golf",
@@ -28,10 +28,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     await update.message.reply_text(
         f"🏆 Welcome {user.first_name}!\n\n"
-        "I'm your Sports News Bot.\n\n"
-        "Commands:\n"
-        "/sports - Choose a sport\n"
-        "/help - Show help"
+        "I'm your Sports News Bot.\n"
+        "Use /sports to get news.\n"
+        "Use /help for commands."
     )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -63,16 +62,17 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     sport_key = query.data
     sport_name = SPORTS.get(sport_key, sport_key)
     
-    # Send sample news (since we're keeping it simple)
-    news = (
-        f"📰 **{sport_name} News**\n\n"
-        f"• Latest updates about {sport_key}\n"
-        f"• Championship standings\n"
-        f"• Player transfers and injuries\n"
-        f"• Upcoming matches\n\n"
-        f"🔹 To get real news, add NEWS_API_KEY\n"
-        f"🔹 Get free key at newsapi.org"
-    )
+    # Send sport-specific news
+    news_messages = {
+        "football": "⚽ **Football News**\n\n• Premier League updates\n• Champions League results\n• Transfer rumors\n• Match schedules",
+        "basketball": "🏀 **Basketball News**\n\n• NBA standings\n• Playoff updates\n• Player stats\n• Trade rumors",
+        "tennis": "🎾 **Tennis News**\n\n• Grand Slam results\n• ATP/WTA rankings\n• Tournament schedules\n• Player updates",
+        "cricket": "🏏 **Cricket News**\n\n• ICC rankings\n• Test match updates\n• T20 league news\n• World Cup schedules",
+        "golf": "⛳ **Golf News**\n\n• PGA Tour updates\n• Major championships\n• Player rankings\n• Tournament results",
+        "f1": "🏎️ **F1 News**\n\n• Race results\n• Driver standings\n• Constructor standings\n• Race schedules"
+    }
+    
+    news = news_messages.get(sport_key, f"📰 {sport_name} News")
     
     await query.edit_message_text(
         news,
@@ -82,10 +82,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     """Start the bot."""
     if not TOKEN:
-        logger.error("TELEGRAM_BOT_TOKEN not set!")
+        logger.error("TELEGRAM_BOT_TOKEN not set in environment variables!")
         return
     
-    logger.info("Starting bot...")
+    logger.info("Starting Sports News Bot...")
     
     # Create application
     app = Application.builder().token(TOKEN).build()
@@ -96,8 +96,8 @@ def main():
     app.add_handler(CommandHandler("sports", sports_menu))
     app.add_handler(CallbackQueryHandler(button_callback))
     
-    # Start polling
-    logger.info("Bot is running!")
+    # Start bot
+    logger.info("Bot is running! Use /start in Telegram.")
     app.run_polling()
 
 if __name__ == "__main__":
